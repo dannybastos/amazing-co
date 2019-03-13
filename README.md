@@ -6,6 +6,7 @@ A springboot application for the TradeShift challenge;
 - Spring Boot
 - Swagger
 - Actuator
+- MockMVC
 
 ## System Requirements
 - docker
