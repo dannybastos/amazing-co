@@ -20,4 +20,3 @@ docker-compose up -d
 
 You can access the swagger in http://localhost:8080/swagger-ui.html
 
-> The BootStrap class was created just to perform a Load Test.
