@@ -163,4 +163,9 @@ public class NodeService {
 		Assert.isTrue(StringUtils.isEmpty(parent.getLeftNodeId()) || StringUtils.isEmpty(parent.getRightNodeId()),
 				messageUtil.PARENT_ALREADY_HAVE_BOTH_CHILDS);
 	}
+	
+	
+	public Optional<Node> findRoot() {
+		return nodeRepository.findByRoot(true);
+	}
 }

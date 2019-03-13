@@ -1,5 +1,7 @@
 package co.amazing.test.load;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,6 +16,8 @@ import co.amazing.service.NodeService;
 @Component
 public class BootStrap implements ApplicationListener<ContextRefreshedEvent> {
 	
+	Logger log = LoggerFactory.getLogger(getClass());
+	
 	private NodeService nodeService;
 	public BootStrap(NodeService nodeService) {
 		this.nodeService = nodeService;
@@ -24,6 +28,10 @@ public class BootStrap implements ApplicationListener<ContextRefreshedEvent> {
 	 */
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		log.info("==========================================");
+		log.info("loading data ... please wait ..");
+		log.info("==========================================");
+		
 		NodeDTO nodeDTO = new NodeDTO();
 		Node parentNode = nodeService.save(nodeDTO);
 		
@@ -42,5 +50,9 @@ public class BootStrap implements ApplicationListener<ContextRefreshedEvent> {
 				parentNode = nodeService.findById(childNode.getId());
 			}
 		}
+		log.info("==========================================");
+		log.info("done!..");
+		log.info("==========================================");
+
 	}
 }

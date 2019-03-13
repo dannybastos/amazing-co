@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,30 +21,36 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.jayway.jsonpath.JsonPath;
 
 import co.amazing.model.Node;
+import co.amazing.service.NodeService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-//@TestPropertySource(locations={"classpath:application-load-test.properties"})
+@TestPropertySource(locations={"classpath:application-load-test.properties"})
 public class LoadTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
 	
+	@Autowired
+	private NodeService nodeService;
 	
 	@Test
 	public void find_children_success() throws Exception {
-//		Node rootNode = new Node();
-//		rootNode.setId("5c881bc2bc145c19226fba5a");
-//
-//		String url = String.format("/nodes/%s/children", rootNode.getId());
-//		MvcResult result = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
-//		String jsonResult = result.getResponse().getContentAsString();
-//
-//		@SuppressWarnings("unchecked")
-//		List<Node> lst = JsonPath.parse(jsonResult).read("$", List.class);
-//		assertTrue(lst.size() == 1000000);
+		Optional<Node> rootNode = nodeService.findRoot();
+		
+		rootNode.ifPresent( root -> {
+			String url = String.format("/nodes/%s/children", root.getId());
+			MvcResult result;
+			try {
+				result = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
+				String jsonResult = result.getResponse().getContentAsString();
+				@SuppressWarnings("unchecked")
+				List<Node> lst = JsonPath.parse(jsonResult).read("$", List.class);
+				assertTrue(lst.size() == 1000000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
-
-
 }
